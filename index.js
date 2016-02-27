@@ -26,7 +26,12 @@ module.exports = {
 
         // Building container
         this.log('starting docker build');
-        let result = child_process.spawnSync('docker', ['build','-f', this.readConfig('dockerFilePath'), '-t', name_with_sha_tag, '-t', name_with_latest_tag, '.']);
+        let result = child_process.spawnSync('docker', ['build','-f', this.readConfig('dockerFilePath'), '-t', name_with_sha_tag, '.']);
+        if(result.status != 0){
+          this._logError(result.stderr);
+          return
+        }
+        result = child_process.spawnSync('docker', ['build','-f', this.readConfig('dockerFilePath'), '-t', name_with_latest_tag, '.']);
         if(result.status != 0){
           this._logError(result.stderr);
           return
